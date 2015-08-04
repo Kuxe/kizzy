@@ -17,14 +17,13 @@ private:
 	char selectedItem = 0;
 	static constexpr ushort baseXOffset = 10;
 	static constexpr ushort baseYOffset = 50;
-	static constexpr ushort diffYOffset = 10;
+	static constexpr ushort diffYOffset = 12;
 
 	XColor backgroundColor;
 	XColor foregroundColor;
 	XColor selectedColor;
 
 	Display* display = nullptr;
-	Font font = 0;
 	int rootWindow;
 	int screen;
 	Colormap colormap;

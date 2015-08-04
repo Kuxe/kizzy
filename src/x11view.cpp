@@ -8,7 +8,7 @@
 void X11View::redraw() const {
 	const std::string& str = searcher.str();
 
-	XClearArea(display, window, 0, 12, 0, 8, false);
+	XClearArea(display, window, 0, 12, 0, 12, false);
 	XSetForeground(display, gc, selectedColor.pixel);
 	XDrawString(display, window, gc, baseXOffset, 20, str.c_str(), str.length());
 
@@ -22,7 +22,7 @@ void X11View::redraw() const {
 
 void X11View::highlightItemNumber(int itemNumber) const {
 	//Clear area of itemNumber
-	XClearArea(display, window, 0, 2 + baseYOffset + diffYOffset * (itemNumber-1), 0, 10, false);
+	XClearArea(display, window, 0, 2 + baseYOffset + diffYOffset * (itemNumber-1), 0, 12, false);
 
 	//Repaint itemNumber area with highlightning
 	const std::string& selectedAppname = ">" + (*searchResults)[itemNumber].getApplication()->getName() + "<";
@@ -33,7 +33,7 @@ void X11View::highlightItemNumber(int itemNumber) const {
 
 void X11View::darkenItemNumber(int itemNumber) const {
 	//Clear area of old currentSelected item
-	XClearArea(display, window, 0, 2 + baseYOffset + diffYOffset * (itemNumber-1), 0, 10, false);
+	XClearArea(display, window, 0, 2 + baseYOffset + diffYOffset * (itemNumber-1), 0, 12, false);
 
 	//Repaint itemNumber area without highlightning
 	const std::string& appname = (*searchResults)[itemNumber].getApplication()->getName();
@@ -84,13 +84,6 @@ X11View::X11View(int& status) :
 
 	window = XCreateSimpleWindow(display, rootWindow, 0, 0, 200, 100, 0, foregroundColor.pixel, backgroundColor.pixel);
 	XSetForeground(display, gc, foregroundColor.pixel);
-
-	if(!(font = XLoadFont(display, "-*-terminesspowerline-*-*-*-*-*-*-*-*-*-*-*-*"))) {
-		status = STATUS_CODE::XLOADFONT_FAILED;
-		return;
-	}
-
-	XSetFont(display, gc, font);
 
 	//Only react to Exposure-event and KeyPress-event
 	XSelectInput(display, window, KeyPressMask);
@@ -177,10 +170,6 @@ X11View::X11View(int& status) :
 }
 
 X11View::~X11View() {
-	if(font) {
-  		XUnloadFont(display, font);
-  	}
-
 	//Only cleanup if initialization worked out
 	if(display != nullptr) {
 		XDestroyWindow(display, window);
