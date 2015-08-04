@@ -70,7 +70,9 @@ public:
             }
         }
 
-        for(const ApplicationMatching& match = pq.top(); !pq.empty(); pq.pop()) {
+        //Only fill searchResults with maxMatches-amount of results (top 10 best matches)
+        unsigned char maxMatches = 10;
+        for(const ApplicationMatching& match = pq.top(); !pq.empty() && maxMatches--; pq.pop()) {
             searchResults.insert(match);
         }
     }

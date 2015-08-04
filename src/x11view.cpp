@@ -5,7 +5,15 @@
 #include "configloader.hpp"
 
 /** Private methods **/
-void X11View::redraw() const {
+void X11View::redraw() {
+
+	//Only trigger resize if windowHeight actually changed
+	const auto newWindowHeight = TOP_PADDING + DIFF_Y_OFFSET * searchResults->size();
+	if(newWindowHeight != windowHeight) {
+		windowHeight = newWindowHeight;
+		XResizeWindow(display, window, WINDOW_WIDTH, windowHeight);
+	}
+
 	const std::string& str = searcher.str();
 
 	XClearArea(display, window, 0, 0, 0, 14, false);
@@ -57,7 +65,7 @@ void X11View::paintPadding() const {
 	XClearArea(display, window, WINDOW_WIDTH - PADDING, 0, 0, 0, false);
 
 	//Clear bottom-side of screen (make some padding between items and border)
-	XClearArea(display, window, 0, WINDOW_HEIGHT - PADDING, 0, 0, false);
+	XClearArea(display, window, 0, windowHeight - PADDING, 0, 0, false);
 }
 
 /** Public methods **/
@@ -120,13 +128,13 @@ X11View::X11View(int& status) :
 	XSetWindowAttributes xswa;
 	xswa.background_pixel = backgroundColor.pixel;
 	const long mask = CWBackPixel;
-	const short x = (screenWidth/2) - (WINDOW_WIDTH/2), y = (screenHeight/2) - (WINDOW_HEIGHT/2);
+	const short x = (screenWidth/2) - (WINDOW_WIDTH/2), y = (screenHeight/2) - (windowHeight/2);
 
 	window = XCreateWindow(
 		display,
 		rootWindow,
 		x, y,
-		WINDOW_WIDTH, WINDOW_HEIGHT,
+		WINDOW_WIDTH, windowHeight,
 		0,
 		CopyFromParent,
 		InputOutput,
@@ -147,7 +155,7 @@ X11View::X11View(int& status) :
 
 
 	//Only react to Exposure-event and KeyPress-event
-	XSelectInput(display, window, KeyPressMask);
+	XSelectInput(display, window, KeyPressMask | StructureNotifyMask);
 	XMapWindow(display, window);
 
 	//I honestly don't know. Got it off internet. For proper, I think, closing of X11-window
@@ -165,6 +173,11 @@ X11View::X11View(int& status) :
 		XNextEvent(display, &event);
 
 		switch(event.type) {
+
+			//Redraw on resize
+			case ConfigureNotify: {
+				redraw();
+			} break;
 
 			case KeyPress: {
 

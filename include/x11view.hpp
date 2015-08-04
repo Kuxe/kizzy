@@ -17,9 +17,11 @@ private:
 	char selectedItem = 0;
 	static constexpr ushort TOP_PADDING = 25;
 	static constexpr ushort PADDING = 10;
-	static constexpr ushort WINDOW_WIDTH = 225;
-	static constexpr ushort WINDOW_HEIGHT = 500;
+	static constexpr ushort WINDOW_WIDTH = 225; 	//This is fixed at all times
 	static constexpr ushort DIFF_Y_OFFSET = 12;		//y-gap between items
+
+	//Depends on how many searchresults there are
+	ushort windowHeight = 500;
 
 	//These are queried later on
 	ushort screenWidth;
@@ -38,7 +40,7 @@ private:
 	Window window;
 	GC gc;
 
-	void redraw() const;
+	void redraw();
 	void highlightItemNumber(int itemNumber) const;
 	void darkenItemNumber(int itemNumber) const;
 	void paintPadding() const;
