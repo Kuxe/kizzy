@@ -8,36 +8,56 @@
 void X11View::redraw() const {
 	const std::string& str = searcher.str();
 
-	XClearArea(display, window, 0, 12, 0, 12, false);
-	XSetForeground(display, gc, selectedColor.pixel);
-	XDrawString(display, window, gc, baseXOffset, 20, str.c_str(), str.length());
+	XClearArea(display, window, 0, 0, 0, 14, false);
+	XSetForeground(display, gc, searchColor.pixel);
+	XDrawString(display, window, gc, PADDING, 12, str.c_str(), str.length());
 
 	int itemNum = 0;
 	for(const ApplicationMatching& applicationMatching : *searchResults) {
 		itemNum == selectedItem ? highlightItemNumber(itemNum) : darkenItemNumber(itemNum);
 		itemNum += 1;
 	}
-	XClearArea(display, window, 0, baseYOffset + diffYOffset * (itemNum-1), 0, 0, false);
+
+	//Clear away old results
+	XClearArea(display, window, 0, TOP_PADDING + DIFF_Y_OFFSET * (itemNum-1), 0, 0, false);
+
+	paintPadding();
 }
 
 void X11View::highlightItemNumber(int itemNumber) const {
-	//Clear area of itemNumber
-	XClearArea(display, window, 0, 2 + baseYOffset + diffYOffset * (itemNumber-1), 0, 12, false);
+	XClearArea(display, window, 0, 2 + TOP_PADDING + DIFF_Y_OFFSET * (itemNumber-1), 0, 12, false);
 
 	//Repaint itemNumber area with highlightning
-	const std::string& selectedAppname = ">" + (*searchResults)[itemNumber].getApplication()->getName() + "<";
+	//Hacky code here... drawing string _with_ arrows using arrow color
+	//then drawing string without arrows using stringcolor ontop of that..
+	//painters algorithm!
+	const std::string& selectedAppnameArrows = ">" + (*searchResults)[itemNumber].getApplication()->getName() + "<";
+	XSetForeground(display, gc, arrowColor.pixel);
+	XDrawString(display, window, gc, 4, TOP_PADDING + DIFF_Y_OFFSET * itemNumber, selectedAppnameArrows.c_str(), selectedAppnameArrows.length());
+
+	//Draw only string
+	const std::string& selectedAppname = (*searchResults)[itemNumber].getApplication()->getName();
 	XSetForeground(display, gc, selectedColor.pixel);
-	XDrawString(display, window, gc, 4, baseYOffset + diffYOffset * itemNumber, selectedAppname.c_str(), selectedAppname.length());
+	XDrawString(display, window, gc, 10, TOP_PADDING + DIFF_Y_OFFSET * itemNumber, selectedAppname.c_str(), selectedAppname.length());
+
 	XSetForeground(display, gc, foregroundColor.pixel);
 }
 
 void X11View::darkenItemNumber(int itemNumber) const {
-	//Clear area of old currentSelected item
-	XClearArea(display, window, 0, 2 + baseYOffset + diffYOffset * (itemNumber-1), 0, 12, false);
+	//Clear area of itemNumber
+	XClearArea(display, window, 0, 2 + TOP_PADDING + DIFF_Y_OFFSET * (itemNumber-1), 0, 12, false);
 
 	//Repaint itemNumber area without highlightning
 	const std::string& appname = (*searchResults)[itemNumber].getApplication()->getName();
-	XDrawString(display, window, gc, baseXOffset, baseYOffset + diffYOffset * itemNumber, appname.c_str(), appname.length());
+	XDrawString(display, window, gc, PADDING, TOP_PADDING + DIFF_Y_OFFSET * itemNumber, appname.c_str(), appname.length());
+}
+
+void X11View::paintPadding() const {
+	//Clear right-side of screen (make some padding between items and border)
+	XClearArea(display, window, WINDOW_WIDTH - PADDING, 0, 0, 0, false);
+
+	//Clear bottom-side of screen (make some padding between items and border)
+	XClearArea(display, window, 0, WINDOW_HEIGHT - PADDING, 0, 0, false);
 }
 
 /** Public methods **/
@@ -68,22 +88,57 @@ X11View::X11View(int& status) :
 	colormap = DefaultColormap(display, screen);
 	gc = DefaultGC(display, screen);
 
+	//Query screenWidth and screenHeight
+	screenWidth = WidthOfScreen(DefaultScreenOfDisplay(display));
+	screenHeight = HeightOfScreen(DefaultScreenOfDisplay(display));
+
+
 	//Load some colors
 	constexpr char RGB_FLAGS = DoRed | DoGreen | DoBlue;
 	backgroundColor.red = 0x2121; backgroundColor.green = 0x2121; backgroundColor.blue = 0x2121;
 	backgroundColor.flags = RGB_FLAGS;
 	XAllocColor(display, colormap, &backgroundColor);
 
-	foregroundColor.red = 0xBBBB; foregroundColor.green = 0xBBBB; foregroundColor.blue = 0xBBBB;
+	foregroundColor.red = 0x3B3B; foregroundColor.green = 0x5353; foregroundColor.blue = 0x8484;
 	foregroundColor.flags = RGB_FLAGS;
 	XAllocColor(display, colormap, &foregroundColor);
 
-	selectedColor.red = 0xFFFF; selectedColor.green = 0xFFFF; selectedColor.blue = 0xFFFF;
+	selectedColor.red = 0xCCCC; selectedColor.green = 0x6C6C; selectedColor.blue = 0xA5A5;
 	selectedColor.flags = RGB_FLAGS;
 	XAllocColor(display, colormap, &selectedColor);
 
-	window = XCreateSimpleWindow(display, rootWindow, 0, 0, 200, 100, 0, foregroundColor.pixel, backgroundColor.pixel);
+
+	arrowColor.red = 0x7777; arrowColor.green = 0x8989; arrowColor.blue = 0xB8B8;
+	arrowColor.flags = RGB_FLAGS;
+	XAllocColor(display, colormap, &arrowColor);
+
+	searchColor.red = 0xFFFF; searchColor.green = 0xFFFF; searchColor.blue = 0xFFFF;
+	searchColor.flags = RGB_FLAGS;
+	XAllocColor(display, colormap, &searchColor);
+
+
+
+	//Force window floating
+	XSetWindowAttributes xswa;
+	xswa.background_pixel = backgroundColor.pixel;
+	const long mask = CWBackPixel;
+	const short x = (screenWidth/2) - (WINDOW_WIDTH/2), y = (screenHeight/2) - (WINDOW_HEIGHT/2);
+
+	window = XCreateWindow(
+		display,
+		rootWindow,
+		x, y,
+		WINDOW_WIDTH, WINDOW_HEIGHT,
+		0,
+		CopyFromParent,
+		InputOutput,
+		CopyFromParent,
+		mask,
+		&xswa
+	);
+
 	XSetForeground(display, gc, foregroundColor.pixel);
+
 
 	//Only react to Exposure-event and KeyPress-event
 	XSelectInput(display, window, KeyPressMask);
@@ -104,6 +159,7 @@ X11View::X11View(int& status) :
 		XNextEvent(display, &event);
 
 		switch(event.type) {
+
 			case KeyPress: {
 
 				//Save the keypress to chr
@@ -120,6 +176,7 @@ X11View::X11View(int& status) :
 						if(selectedItem + 1 < searchResults->size()) {
 							darkenItemNumber(selectedItem);
 							highlightItemNumber(selectedItem += 1);
+							paintPadding();
 						}
 					} break;
 					
@@ -127,6 +184,7 @@ X11View::X11View(int& status) :
 						if(selectedItem > 0) {
 							darkenItemNumber(selectedItem);
 							highlightItemNumber(selectedItem -= 1);
+							paintPadding();
 						}
 					} break;
 
