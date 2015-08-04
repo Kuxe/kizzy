@@ -21,7 +21,7 @@ private:
 	static constexpr ushort DIFF_Y_OFFSET = 12;		//y-gap between items
 
 	//Depends on how many searchresults there are
-	ushort windowHeight = 500;
+	ushort windowHeight = TOP_PADDING;
 
 	//These are queried later on
 	ushort screenWidth;
