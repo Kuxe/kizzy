@@ -26,3 +26,13 @@
 *.exe
 *.out
 *.app
+
+#Build directories
+/debug/
+/release/
+
+#Sublime project files
+*sublime*
+
+#YCMD (YouCompleteMe) config files
+.ycm*
