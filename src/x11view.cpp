@@ -116,9 +116,7 @@ X11View::X11View(int& status) :
 	searchColor.flags = RGB_FLAGS;
 	XAllocColor(display, colormap, &searchColor);
 
-
-
-	//Force window floating
+	//Create window in center of screen
 	XSetWindowAttributes xswa;
 	xswa.background_pixel = backgroundColor.pixel;
 	const long mask = CWBackPixel;
@@ -138,6 +136,14 @@ X11View::X11View(int& status) :
 	);
 
 	XSetForeground(display, gc, foregroundColor.pixel);
+
+	//Set window class name to "kizzy"
+	char programName[] {"kizzy"};
+	auto classHint = XAllocClassHint();
+	classHint->res_name = programName;
+	classHint->res_class = programName;
+	XSetClassHint(display, window, classHint);
+
 
 
 	//Only react to Exposure-event and KeyPress-event
