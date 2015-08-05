@@ -152,11 +152,16 @@ X11View::X11View(int& status) :
 	classHint->res_class = programName;
 	XSetClassHint(display, window, classHint);
 
-
-
 	//Only react to Exposure-event and KeyPress-event
 	XSelectInput(display, window, KeyPressMask | StructureNotifyMask);
 	XMapWindow(display, window);
+	
+	//This resize might seem stupid. It is, and it is neccesary
+	//For reasons unknown XMapWindow, above, makes the window
+	//have a larger windowsize than specified in call to XCreateWindow
+	//but only if the parameter h of XCreateWindow is small enough..
+	//tl;dr don't remove this
+	XResizeWindow(display, window, WINDOW_WIDTH, windowHeight);	
 
 	//I honestly don't know. Got it off internet. For proper, I think, closing of X11-window
 	Atom WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", False);
