@@ -1,13 +1,9 @@
 #ifndef APPLICATIONMATCHING_HPP
 #define APPLICATIONMATCHING_HPP
 
-#include <ostream>
-
 class Application;
 class ApplicationMatching {
 private:
-    friend std::ostream& operator<< (std::ostream& stream, const ApplicationMatching& applicationMatching);
-
     float rank;
     const Application* application;
 

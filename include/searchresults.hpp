@@ -2,6 +2,7 @@
 #define SEARCHRESULTS_HPP
 
 #include <vector>
+#include <cstddef>
 #include "applicationmatching.hpp"
 
 /** Represents results from a search
@@ -12,7 +13,6 @@ private:
     std::vector<ApplicationMatching> results;
 
 public:
-
 	const ApplicationMatching& operator[](int index) const;
 
     void insert(const ApplicationMatching& applicationMatching);

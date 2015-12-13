@@ -19,7 +19,3 @@ const std::string& Application::getExec() const {
 const std::string& Application::getIcon() const {
     return icon;
 }
-
-std::ostream& operator<<(std::ostream& stream, const Application& application) {
-    stream << "Name: " << application.name << ", Exec: " << application.exec << ", Icon: " << application.icon;
-}

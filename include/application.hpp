@@ -2,13 +2,11 @@
 #define APPLICATION_HPP
 
 #include <string>
-#include <ostream>
 
 /** Represents a .desktop-file **/
 class Application {
 private:
     friend std::hash<Application>;
-    friend std::ostream& operator<< (std::ostream& stream, const Application& application);
 
     std::string name;
     std::string exec;

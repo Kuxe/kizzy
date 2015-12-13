@@ -1,6 +1,6 @@
 # kizzy
 * kizzy is a X11 application-launcher for Linux, capable of launching .desktop files
-* kizzy is tiny and aims to be less than 64kb. As of 2015-08-04 the release-build (with lots of space-reducing flags) is only 24kb on my system
+* kizzy is tiny and aims to be less than 64kb. As of 2015-12-13 the release-build (with lots of space-reducing flags and using <a href="https://en.wikipedia.org/wiki/UPX">UPX</a>) is only 16kb on my system
 * kizzy utilizes some C++14 features for easy to read code
 * kizzy has few dependencies: X11
 * kizzy is in-progress, and may very well die out any time. I'm a student with a busy schedule during semesters
