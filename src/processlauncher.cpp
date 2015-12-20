@@ -44,14 +44,27 @@ int ProcessLauncher::launch(const std::string& execPath) {
 		int i = 0;
 		char *token = strtok(strargv, " ");
 	    while(token != NULL) {
-	        buffer[i++] = token;
+	    	//Doesn't adhere to freedesktop desktop entry specification
+	    	//See: http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+	    	//This strips the %f code from any desktop file
+	    	if(strcmp(token, "%F")) {
+	    		buffer[i++] = token;
+	    	}
 	        token = strtok(NULL, " ");
 	    }
-		buffer[i+1] = NULL;
 
-		if(execvp(buffer[0], buffer) < 0 ) {
-			printf("Couldn't launch executable on %s (with args)\n", execPath.c_str());
-			return STATUS_CODE::EXEC_FAILED;
+	    //The variable i will be >= 1 due to the program name, so if i >= 2 then there have been args
+	    if(i >= 2) {
+			buffer[i+1] = NULL;
+			if(execvp(buffer[0], buffer) < 0 ) {
+				printf("Couldn't launch executable on %s (with args)\n", execPath.c_str());
+				return STATUS_CODE::EXEC_FAILED;
+			}
+		} else {
+			if(execlp(buffer[0], nullptr) == -1) {
+				printf("Couldn't launch executable on %s (with args that was ignored)\n", execPath.c_str());
+				return STATUS_CODE::EXEC_FAILED;
+			}
 		}
 	} else {
 		if(execlp(execPath.c_str(), nullptr) == -1) {
