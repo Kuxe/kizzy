@@ -6,7 +6,7 @@
 * kizzy is in-progress, and may very well die out any time. I'm a student with a busy schedule during semesters
 
 ## Building
-`mkdir release && cmake -DCMAKE_BUILD_TYPE=Release .. && make` <br> `mkdir debug && cmake -DCMAKE_BUILD_TYPE=Debug .. && make`
+`mkdir release && cd release && cmake -DCMAKE_BUILD_TYPE=Release .. && make` <br> `mkdir debug && cd debug && cmake -DCMAKE_BUILD_TYPE=Debug .. && make`
 
 The release build uses lots of compiler-flags for reducing executable-size. Don't bother debugging it, for any debugging purpose whatsoever you should use the debug-build.
 
