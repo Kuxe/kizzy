@@ -1,4 +1,4 @@
-#include "configloader.hpp"
+#include "../include/configloader.hpp"
 #include <fstream>
 
 bool ConfigLoader::loadConfig() {

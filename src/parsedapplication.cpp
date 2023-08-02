@@ -1,4 +1,4 @@
-#include "parsedapplication.hpp"
+#include "../include/parsedapplication.hpp"
 
 ParsedApplication::ParsedApplication(const Application& application, bool success) :
     application(application), success(success) {

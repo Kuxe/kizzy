@@ -1,5 +1,5 @@
-#include "searcher.hpp"
-#include "fuzzysearch.hpp"
+#include "../include/searcher.hpp"
+#include "../include/fuzzysearch.hpp"
 
 const SearchResults& Searcher::search(const char key) {
     searchString.add(key);

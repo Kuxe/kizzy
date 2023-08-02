@@ -1,8 +1,8 @@
-#include "x11view.hpp"
+#include "../include/x11view.hpp"
 #include <X11/Xutil.h>
-#include "statusdefs.hpp"
-#include "processlauncher.hpp"
-#include "configloader.hpp"
+#include "../include/statusdefs.hpp"
+#include "../include/processlauncher.hpp"
+#include "../include/configloader.hpp"
 
 /** Private methods **/
 void X11View::redraw() {

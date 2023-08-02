@@ -1,4 +1,4 @@
-#include "x11view.hpp"
+#include "../include/x11view.hpp"
 
 int main(int argc, char* argv[]) {
 	int status;
