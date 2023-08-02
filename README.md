@@ -3,6 +3,9 @@ Fixed:
 -   Import statements.
 -   Multiple argument bug where it wouldn't execute some binaries.
 
+Added:
+-   Ability to cycle through the menu items by pressing ```Tab```
+
 Other than that, the project remains the same.
 [original repo](https://github.com/Kuxe/kizzy)
 
