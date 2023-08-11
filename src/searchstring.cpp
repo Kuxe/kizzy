@@ -1,4 +1,4 @@
-#include "searchstring.hpp"
+#include "../include/searchstring.hpp"
 
 void SearchString::add(const unsigned char& key) {
     str.push_back(key);

@@ -1,6 +1,6 @@
-#include "directory.hpp"
+#include "../include/directory.hpp"
 #include <dirent.h>
-#include "desktopparser.hpp"
+#include "../include/desktopparser.hpp"
 
 Directory::Directory(const std::string& path) :
     path(path) {

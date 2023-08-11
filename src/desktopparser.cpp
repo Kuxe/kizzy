@@ -1,4 +1,4 @@
-#include "desktopparser.hpp"
+#include "../include/desktopparser.hpp"
 #include <fstream>
 #include <cstring>
 

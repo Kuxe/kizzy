@@ -1,4 +1,4 @@
-#include "imageloader.hpp"
+#include "../include/imageloader.hpp"
 
 bool ImageLoader::load(const std::string& imagePath) {
 

@@ -1,4 +1,4 @@
-#include "searchresults.hpp"
+#include "../include/searchresults.hpp"
 
 const ApplicationMatching& SearchResults::operator[](int index) const {
 	return results[index];

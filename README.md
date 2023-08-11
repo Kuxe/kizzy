@@ -1,3 +1,14 @@
+# Update 08/2023
+Fixed:
+-   Import statements.
+-   Multiple argument bug where it wouldn't execute some binaries.
+
+Added:
+-   Ability to cycle through the menu items by pressing ```Tab```
+
+Other than that, the project remains the same.
+[original repo](https://github.com/Kuxe/kizzy)
+
 # kizzy
 * kizzy is a X11 application-launcher for Linux, capable of launching .desktop files
 * kizzy is tiny and aims to be less than 64kb. As of 2015-12-13 the release-build (with lots of space-reducing flags and using <a href="https://en.wikipedia.org/wiki/UPX">UPX</a>) is only 16kb on my system
@@ -18,7 +29,7 @@ You _must_ create that file by yourself. My kizzy.conf looks like this:
 ~/Desktop/
 ```
 
-##Debugging
+## Debugging
 kizzy doesn't use any logging-system (a voice echoes in the wind "tiiiinyyyy...."). kizzy doesn't use standard output streams. For checking what went wrong, you could do: `./kizzy` followed by `echo $?` which will output a number. Those numbers are enum-values from <a href="https://github.com/Kuxe/kizzy/blob/master/include/statusdefs.hpp">statusdefs.hpp</a>. So, for example, if echo outputs 1 then are missing the kizzy.conf. Creating that file should fix error 1. 
 
 ## FAQ
